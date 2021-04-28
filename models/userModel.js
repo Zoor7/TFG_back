@@ -17,13 +17,13 @@ const userSchema = new mongoose.Schema({
   comments: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Comments",
+      ref: "Comment",
     },
   ],
   places: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Places",
+      ref: "Place",
     },
   ],
   avatar: String,
