@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 
 const placeSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  passwordHash: String,
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -20,6 +17,7 @@ const placeSchema = new mongoose.Schema({
       ref: "Comment",
     },
   ],
+  description:String,
   image_url: String,
   location: {
     latitude: Number,

@@ -3,7 +3,8 @@ const Place = require("../models/placesModel");
 
 //GETTERS ---------------------------------
 placeRouter.get("/places", (request, response) => {
-  Place.find({}).then((res) => {
+  Place.find({}).populate('author').then((res) => {
+    console.log(res);
     response.json(res);
   });
 });
