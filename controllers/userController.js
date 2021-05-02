@@ -48,9 +48,9 @@ userRouter.put("/users/addLike", (request, response) => {
 
 
 userRouter.put("/users/addComment", (request, response) => {
-  const { body } = request;
+  const { userId,commentId } = request.body;
 
-  User.updateOne({id:body.userId},{$push:{comments:body.commentId}}).then((res) => {
+  User.findOneAndUpdate({id:userId},{$push:{comments:commentId}}).then((res) => {
     response.json(res);
   });
 });

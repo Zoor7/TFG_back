@@ -16,7 +16,6 @@ commentRouter.post("/comments/create", (request, response) => {
   const { body } = request;
 
   Comment.insertMany(body).then((res) => {
-    console.log(res);
     response.json(res);
   });
 });
