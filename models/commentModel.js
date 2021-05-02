@@ -6,6 +6,10 @@ const commentSchema = new mongoose.Schema({
     ref: "User",
   },
   text: String,
+  place:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Place",
+  },
   responses: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -13,7 +17,7 @@ const commentSchema = new mongoose.Schema({
     },
   ],
   isResponse: Boolean,
-});
+},{timestamps:true});
 
 commentSchema.set("toJSON", {
   transform: (document, returnedObject) => {

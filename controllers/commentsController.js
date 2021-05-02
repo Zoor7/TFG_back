@@ -2,7 +2,7 @@ const commentRouter = require("express").Router();
 const Comment = require("../models/commentModel");
 
 commentRouter.get("/comments", (request, response) => {
-  Comment.find({}).then((res) => {
+  Comment.find({isResponse:false}).then((res) => {
     response.json(res);
   });
 });

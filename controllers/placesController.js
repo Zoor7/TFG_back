@@ -26,6 +26,7 @@ placeRouter.post("/places/create", (request, response) => {
   });
 });
 
+
 //DELETE----------------------------------
 placeRouter.delete("/places/delete/:_id", (request, response) => {
   const { _id } = request.params;
@@ -34,5 +35,16 @@ placeRouter.delete("/places/delete/:_id", (request, response) => {
     response.json(res);
   });
 });
+
+
+//ADD---------------------------------------------------------------------
+placeRouter.post("/places/addLike", (request, response) => {
+  const { body } = request;
+
+  Place.insertMany({$push:{likes:body}}).then((res) => {
+    response.json(res);
+  });
+});
+
 
 module.exports = placeRouter;
