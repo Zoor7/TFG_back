@@ -1,23 +1,27 @@
 const mongoose = require("mongoose");
 
-const commentSchema = new mongoose.Schema({
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-  text: String,
-  place:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Place",
-  },
-  responses: [
-    {
+const commentSchema = new mongoose.Schema(
+  {
+    author: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Comment",
+      ref: "User",
     },
-  ],
-  isResponse: Boolean,
-},{timestamps:true});
+    text: String,
+    place: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Place",
+    },
+    responses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
+    author_username: String,
+    isResponse: Boolean,
+  },
+  { timestamps: true }
+);
 
 commentSchema.set("toJSON", {
   transform: (document, returnedObject) => {

@@ -13,16 +13,11 @@ const placeSchema = new mongoose.Schema({
   ],
   comments: [
     {
-      author:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-      text:String,
-      responses:[],
-      isResponse:Boolean,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
     },
   ],
-  description:String,
+  description: String,
   image_url: String,
   location: {
     latitude: Number,
