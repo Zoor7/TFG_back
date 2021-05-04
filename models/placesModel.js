@@ -4,6 +4,7 @@ const placeSchema = new mongoose.Schema({
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required:true
   },
   likes: [
     {
@@ -17,14 +18,14 @@ const placeSchema = new mongoose.Schema({
       ref: "Comment",
     },
   ],
-  description: String,
-  image_url: String,
+  description:{type:String, required:true},
+  image_url: {type:String, required:true},
   location: {
     latitude: Number,
     longitude: Number,
   },
   web: String,
-  type: String,
+  type: {type:String, required:true},
 });
 
 placeSchema.set("toJSON", {

@@ -17,12 +17,19 @@ userRouter.get("/users/:_id", (request, response) => {
 });
 
 
-userRouter.post("/users/create", (request, response) => {
+userRouter.post("/users/create", async (request, response,next) => {
+
   const { body } = request;
 
-  User.insertMany([body]).then((res) => {
-    response.json(res);
-  });
+  const newUser = new User({...body})
+
+  try {
+    const res= await newUser.save()
+    console.log(res,'BBB');
+  } catch (error) {
+    next(error)
+    
+  }
 });
 
 //ADD-----------------------------------------------------------------------------------------------------

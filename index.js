@@ -37,6 +37,7 @@ app.use("/api", commentRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
+app.use(middleware.expressValidator);
 
 app.listen(config.PORT, () => {
   logger.info(`Server running on port ${config.PORT}`);

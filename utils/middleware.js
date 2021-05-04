@@ -24,8 +24,18 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
+const expressValidator=(error, request, response, next)=>{
+
+  logger.error(error.errors[0])
+
+  return response.status(400).json({error: error.errors[0].msg +" "+ error.errors[0].param })
+  next(error)
+
+}
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
+  expressValidator
 };
