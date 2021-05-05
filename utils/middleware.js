@@ -13,7 +13,7 @@ const unknownEndpoint = (request, response) => {
 };
 
 const errorHandler = (error, request, response, next) => {
-  logger.error(error.message);
+  logger.error(error);
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
@@ -24,18 +24,13 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
-const expressValidator=(error, request, response, next)=>{
-
-  logger.error(error.errors[0])
-
-  return response.status(400).json({error: error.errors[0].msg +" "+ error.errors[0].param })
-  next(error)
-
-}
+const expressValidator = (error, request, response, next) => {
+  return response.status(400).json(error);
+};
 
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
-  expressValidator
+  expressValidator,
 };

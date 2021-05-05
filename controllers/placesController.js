@@ -2,22 +2,27 @@ const placeRouter = require("express").Router();
 const Place = require("../models/placesModel");
 
 //GETTERS ---------------------------------
-placeRouter.get("/places", (request, response) => {
-  Place.find({})
-    .populate("author")
-    .populate("comments")
-    .then((res) => {
-      console.log(res);
-      response.json(res);
-    });
+placeRouter.get("/places", async (request, response, next) => {
+  try {
+    const result = await Place.find({}).populate("author").populate("comments");
+    response.send(result);
+  } catch (error) {
+    next(error);
+  }
 });
 
-placeRouter.get("/places/:_id", (request, response) => {
+placeRouter.get("/places/:_id", async (request, response, next) => {
   const { _id } = request.params;
 
-  Place.findById(_id).then((res) => {
-    response.json(res);
-  });
+  try {
+    const result = await Place.findById(_id);
+    if (!result) {
+      return next({ error: "No hay ningún lugar con ese ID" });
+    }
+    response.send(result);
+  } catch (error) {
+    next(error);
+  }
 });
 
 //CREATE-----------------------------------
@@ -34,36 +39,69 @@ placeRouter.post("/places/create", async (request, response, next) => {
 });
 
 //DELETE----------------------------------
-placeRouter.delete("/places/delete/:_id", (request, response) => {
+placeRouter.delete("/places/delete/:_id", async (request, response, next) => {
   const { _id } = request.params;
 
-  Place.deleteOne(_id).then((res) => {
-    response.json(res);
-  });
+  try {
+    const result = await Place.deleteOne({ _id: _id });
+    if (!result) {
+      return next({ error: "No hay ningún lugar con ese ID" });
+    }
+    response.send(result);
+  } catch (error) {
+    next(error);
+  }
+});
+placeRouter.delete("/places/delete", async (request, response, next) => {
+  try {
+    const result = await Place.deleteMany({});
+    if (!result) {
+      return next({ error: "No hay ningún lugar con ese ID" });
+    }
+    response.send(result);
+  } catch (error) {
+    next(error);
+  }
 });
 
 //UPDATE---------------------------------------------------------------------
 
-placeRouter.put("/places/addLike", (request, response) => {
+placeRouter.put("/places/addLike", async (request, response, next) => {
   const { userId, placeId } = request.body;
 
-  Place.updateOne({ _id: placeId }, { $push: { likes: userId } }).then(
-    (res) => {
-      response.json(res);
+  try {
+    const result = await Place.updateOne(
+      { _id: placeId },
+      { $push: { likes: userId } },
+      { new: true }
+    ).sort();
+    if (!result) {
+      return next({ error: "No hay ningún lugar con ese ID" });
     }
-  );
+    response.send(result);
+  } catch (error) {
+    next(error);
+  }
 });
 
-placeRouter.put("/places/addComment", (request, response) => {
+placeRouter.put("/places/addComment", async (request, response, next) => {
   const { commentId, placeId } = request.body;
 
-  Place.findOneAndUpdate(
-    { _id: placeId },
-    { $push: { comments: commentId } },
-    { new: true }
-  ).then((res) => {
-    response.json(res);
-  });
+  try {
+    const result = await Place.findOneAndUpdate(
+      { _id: placeId },
+      { $push: { comments: commentId } },
+      { new: true }
+    )
+      .populate("author")
+      .populate("comments");
+    if (!result) {
+      return next({ error: "No hay ningún lugar con ese ID" });
+    }
+    response.send(result);
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = placeRouter;
