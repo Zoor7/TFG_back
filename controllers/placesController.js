@@ -64,6 +64,22 @@ placeRouter.delete("/places/delete", async (request, response, next) => {
   }
 });
 
+placeRouter.put(
+  "/places/deleteComments/:_id",
+  async (request, response, next) => {
+    const { _id } = request.params;
+    try {
+      const result = await Place.updateOne({ _id }, { $set: { comments: [] } });
+      if (!result) {
+        return next({ error: "No hay ningún lugar con ese ID" });
+      }
+      response.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 //UPDATE---------------------------------------------------------------------
 
 placeRouter.put("/places/addLike", async (request, response, next) => {

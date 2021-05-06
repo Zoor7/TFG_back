@@ -7,7 +7,6 @@ userRouter.get("/users", (request, response) => {
   });
 });
 
-
 userRouter.get("/users/:_id", (request, response) => {
   const { _id } = request.params;
 
@@ -16,19 +15,16 @@ userRouter.get("/users/:_id", (request, response) => {
   });
 });
 
-
-userRouter.post("/users/create", async (request, response,next) => {
-
+userRouter.post("/users/create", async (request, response, next) => {
   const { body } = request;
 
-  const newUser = new User({...body})
+  const newUser = new User({ ...body });
 
   try {
-    const res= await newUser.save()
-    console.log(res,'BBB');
+    const res = await newUser.save();
+    console.log(res, "BBB");
   } catch (error) {
-    next(error)
-    
+    next(error);
   }
 });
 
@@ -36,31 +32,52 @@ userRouter.post("/users/create", async (request, response,next) => {
 userRouter.put("/users/addPlace", (request, response) => {
   const { userId, placeId } = request.body;
 
-  User.updateOne({_id:userId},{$push:{places:placeId}}).then((res) => {
-
-    response.json(res);
-  }).catch(err=>{
-    response.status(400).json({error:"Ta mal"})
-  })
+  User.updateOne({ _id: userId }, { $push: { places: placeId } })
+    .then((res) => {
+      response.json(res);
+    })
+    .catch((err) => {
+      response.status(400).json({ error: "Ta mal" });
+    });
 });
-
 
 userRouter.put("/users/addLike", (request, response) => {
   const { body } = request;
 
-  User.updateOne({id:body.userId},{$push:{likes:body.placeId}}).then((res) => {
-    response.json(res);
-  });
+  User.updateOne({ id: body.userId }, { $push: { likes: body.placeId } }).then(
+    (res) => {
+      response.json(res);
+    }
+  );
 });
-
 
 userRouter.put("/users/addComment", (request, response) => {
-  const { userId,commentId } = request.body;
+  const { userId, commentId } = request.body;
 
-  User.findOneAndUpdate({id:userId},{$push:{comments:commentId}}).then((res) => {
+  User.findOneAndUpdate(
+    { id: userId },
+    { $push: { comments: commentId } }
+  ).then((res) => {
     response.json(res);
   });
 });
 
+//DELETEEEE
+
+userRouter.put(
+  "/users/deleteComments/:_id",
+  async (request, response, next) => {
+    const { _id } = request.params;
+    try {
+      const result = await User.updateOne({ _id }, { $set: { comments: [] } });
+      if (!result) {
+        return next({ error: "No hay ningún lugar con ese ID" });
+      }
+      response.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 module.exports = userRouter;
