@@ -21,8 +21,15 @@ const placeSchema = new mongoose.Schema({
   description: { type: String, required: true, minLength: 10, maxLength: 300 },
   image_url: { type: String, required: true },
   location: {
-    latitude: Number,
-    longitude: Number,
+    type: {
+      type: String, // Don't do `{ location: { type: String } }`
+      enum: ['Point'], // 'location.type' must be 'Point'
+      required: true
+    },
+    coordinates: {
+      type: [Number],
+      required: true
+    }
   },
   web: String,
   type: { type: String, required: true },

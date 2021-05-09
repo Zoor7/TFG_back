@@ -1,18 +1,27 @@
 const userRouter = require("express").Router();
 const User = require("../models/userModel");
 
-userRouter.get("/users", (request, response) => {
-  User.find({}).then((res) => {
-    response.json(res);
-  });
+userRouter.get("/users", async(request,response,next) => {
+
+  try {
+    const res=await User.find({})
+    response.json(res) 
+    
+  } catch (error) {
+    next(error)
+    
+  }
 });
 
-userRouter.get("/users/:_id", (request, response) => {
+userRouter.get("/users/:_id", async(request, response,next) => {
   const { _id } = request.params;
 
-  User.findById(_id).then((res) => {
+  try {
+    const res = await User.findById(_id)
     response.json(res);
-  });
+  } catch (error) {
+    next(error)
+  }
 });
 
 userRouter.post("/users/create", async (request, response, next) => {
@@ -29,44 +38,43 @@ userRouter.post("/users/create", async (request, response, next) => {
 });
 
 //ADD-----------------------------------------------------------------------------------------------------
-userRouter.put("/users/addPlace", (request, response) => {
+userRouter.put("/users/addPlace", async(request, response,next) => {
   const { userId, placeId } = request.body;
 
-  User.updateOne({ _id: userId }, { $push: { places: placeId } })
-    .then((res) => {
-      response.json(res);
-    })
-    .catch((err) => {
-      response.status(400).json({ error: "Ta mal" });
-    });
+
+  try {
+    const res=await User.updateOne({ _id: userId }, { $push: { places: placeId } }) 
+    response.json(res);
+  } catch (error) {
+    next(error)
+  }
+  
 });
 
-userRouter.put("/users/addLike", (request, response) => {
+userRouter.put("/users/addLike", async(request, response,next) => {
   const { body } = request;
-
-  User.updateOne({ id: body.userId }, { $push: { likes: body.placeId } }).then(
-    (res) => {
-      response.json(res);
-    }
-  );
+  try {
+    const res=await User.updateOne({ id: body.userId }, { $push: { likes: body.placeId } })
+  } catch (error) {
+    next(error)
+  }
 });
 
-userRouter.put("/users/addComment", (request, response) => {
+userRouter.put("/users/addComment", async(request, response,next) => {
   const { userId, commentId } = request.body;
 
-  User.findOneAndUpdate(
-    { id: userId },
-    { $push: { comments: commentId } }
-  ).then((res) => {
-    response.json(res);
-  });
+  try {
+    const res=await User.findOneAndUpdate({ id: userId },{ $push: { comments: commentId } })
+      response.json(res);
+  } catch (error) {
+    next(error)
+  }
+
 });
 
 //DELETEEEE
 
-userRouter.put(
-  "/users/deleteComments/:_id",
-  async (request, response, next) => {
+userRouter.put("/users/deleteComments/:_id",async (request, response, next) => {
     const { _id } = request.params;
     try {
       const result = await User.updateOne({ _id }, { $set: { comments: [] } });
