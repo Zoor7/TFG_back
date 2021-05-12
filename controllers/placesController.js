@@ -28,6 +28,8 @@ placeRouter.get("/places/:_id", async (request, response, next) => {
 //CREATE-----------------------------------
 placeRouter.post("/places/create", async (request, response, next) => {
   const { body } = request;
+
+  console.log(body, "AAAAAAAAAAAAAAAAAAAA");
   const newPlace = new Place({ ...body });
 
   try {

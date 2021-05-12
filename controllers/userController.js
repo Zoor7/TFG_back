@@ -11,7 +11,6 @@ userRouter.get("/users", async (request, response, next) => {
 });
 userRouter.post("/users/byEmail", async (request, response, next) => {
   const { email } = request.body;
-  console.log(request.body, "AAAAAAAAAAAAA");
 
   try {
     const res = await User.find({ email: email });
