@@ -76,7 +76,7 @@ userRouter.put("/users/addComment", async (request, response, next) => {
 
   try {
     const res = await User.findOneAndUpdate(
-      { id: userId },
+      { _id: userId },
       { $push: { comments: commentId } }
     );
     response.json(res);

@@ -29,11 +29,10 @@ placeRouter.get("/places/:_id", async (request, response, next) => {
 placeRouter.post("/places/create", async (request, response, next) => {
   const { body } = request;
 
-  console.log(body, "AAAAAAAAAAAAAAAAAAAA");
   const newPlace = new Place({ ...body });
 
   try {
-    const res = await newPlace.save();
+    const res = await (await newPlace.save()).populate("author").execPopulate();
     response.send(res);
   } catch (error) {
     next(error);
