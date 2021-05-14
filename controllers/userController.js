@@ -63,7 +63,7 @@ userRouter.put("/users/addLike", async (request, response, next) => {
   const { body } = request;
   try {
     const res = await User.updateOne(
-      { id: body.userId },
+      { _id: body.userId },
       { $push: { likes: body.placeId } }
     );
   } catch (error) {
