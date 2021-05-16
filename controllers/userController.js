@@ -2,6 +2,7 @@ const userRouter = require("express").Router();
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 
+const fileUpload = require('../utils/file-upload');
 const User = require("../models/userModel");
 
 userRouter.get("/users", async (request, response, next) => {
@@ -35,7 +36,7 @@ userRouter.get("/users/:_id", async (request, response, next) => {
 });
 
 /* Login y Registrarse */
-userRouter.post('/signup', async (req, res, next) => {
+userRouter.post('/signup', fileUpload.single('avatar'), async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next('Inputs inválidos, por favor comprueba la información del registro.'
