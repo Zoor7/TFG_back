@@ -96,9 +96,22 @@ userRouter.post('/login', async (req, res, next) => {
     return next('El login ha fallado, inténtalo más tarde por favor.');
   }
 
-  if (!existingUser || existingUser.passwordHash !== passwordHash) {
+  if (!existingUser) {
     return next('Datos incorrectos, no se pudo iniciar sesión.');
   }
+
+  let isValidPassword = false;
+  try {
+    isValidPassword = await bcrypt.compare(passwordHash, existingUser.passwordHash);
+  } catch (error) {
+    return next('Contraseña incorrecta!');
+  }
+
+
+  if (!isValidPassword) {
+    return next('El login ha fallado, inténtalo más tarde por favor.');
+  }
+
 
   res.json({
     message: 'Login con éxito!',
