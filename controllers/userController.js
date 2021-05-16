@@ -107,11 +107,9 @@ userRouter.post('/login', async (req, res, next) => {
     return next('Contraseña incorrecta!');
   }
 
-
   if (!isValidPassword) {
     return next('El login ha fallado, inténtalo más tarde por favor.');
   }
-
 
   res.json({
     message: 'Login con éxito!',
