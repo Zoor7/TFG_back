@@ -47,7 +47,7 @@ userRouter.post(
       );
     }
 
-    const { username, email, password } = req.body;
+    const { username, email, password, avatar } = req.body;
 
     let existingUser;
     try {
@@ -76,7 +76,7 @@ userRouter.post(
       username,
       email,
       password: hashedPassword,
-      // avatar: req.file.path, //Esto será para cuando pongamos la imagen del avatar
+      avatar,
     });
 
     try {
