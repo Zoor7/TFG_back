@@ -1,6 +1,7 @@
 const userRouter = require("express").Router();
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
 
 const fileUpload = require("../utils/file-upload");
 const User = require("../models/userModel");
@@ -88,7 +89,17 @@ userRouter.post(
       );
     }
 
+    // Generando un token con jsonwebtoken
+    let token;
+    try {
+      token = jwt.sign({ userId: createdUser.id, email: createdUser.email }, 'secret_pass', { expiresIn: '1h' });
+    } catch (error) {
+      return next("El registro ha fallado, inténtalo más tarde por favor.");
+
+    }
+
     res.status(201).json({ user: createdUser.toObject({ getters: true }) });
+    // res.status(201).json({ userId: createdUser.id, email: createdUser.email, token: token });
   }
 );
 
@@ -118,8 +129,20 @@ userRouter.post("/users/login", async (req, res, next) => {
   if (!isValidPassword) {
     return next("El login ha fallado, inténtalo más tarde por favor.");
   }
-  console.log(existingUser, "AAAAAAAAAAA");
+
+  let token;
+  try {
+    token = jwt.sign({ userId: existingUser.id, email: existingUser.email }, 'secret_pass', { expiresIn: '1h' });
+  } catch (error) {
+    return next("El login ha fallado, inténtalo más tarde por favor.");
+  }
+
   res.json(existingUser);
+  // res.json({
+  //   userId: existingUser.id,
+  //   email: existingUser.email,
+  //   token: token
+  // });
 });
 
 /* ----- */
