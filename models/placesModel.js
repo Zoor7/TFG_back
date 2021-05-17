@@ -23,13 +23,13 @@ const placeSchema = new mongoose.Schema({
   location: {
     type: {
       type: String, // Don't do `{ location: { type: String } }`
-      enum: ['Point'], // 'location.type' must be 'Point'
-      required: true
+      enum: ["Point"], // 'location.type' must be 'Point'
+      required: true,
     },
     coordinates: {
       type: [Number],
-      required: true
-    }
+      required: true,
+    },
   },
   web: String,
   type: { type: String, required: true },
@@ -40,8 +40,8 @@ placeSchema.set("toJSON", {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
-    // the passwordHash should not be revealed
-    delete returnedObject.passwordHash;
+    // the password should not be revealed
+    delete returnedObject.password;
   },
 });
 

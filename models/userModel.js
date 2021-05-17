@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 const { isEmail } = require("validator");
-const uniqueValidator = require('mongoose-unique-validator');
-
-
+const uniqueValidator = require("mongoose-unique-validator");
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -10,7 +8,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     minlength: 4,
-    maxlength: 20
+    maxlength: 20,
   },
   email: {
     type: String,
@@ -18,9 +16,9 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: [isEmail, "no es mail"],
   },
-  passwordHash: {
+  password: {
     type: String,
-    required: true
+    required: true,
   },
   likes: [
     {
@@ -50,8 +48,8 @@ userSchema.set("toJSON", {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
-    // the passwordHash should not be revealed
-    delete returnedObject.passwordHash;
+    // the password should not be revealed
+    delete returnedObject.password;
   },
 });
 

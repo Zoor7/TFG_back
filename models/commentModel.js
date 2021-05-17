@@ -6,7 +6,7 @@ const commentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    text: {type:String, required:true},
+    text: { type: String, required: true },
     place: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Place",
@@ -28,8 +28,8 @@ commentSchema.set("toJSON", {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
-    // the passwordHash should not be revealed
-    delete returnedObject.passwordHash;
+    // the password should not be revealed
+    delete returnedObject.password;
   },
 });
 
