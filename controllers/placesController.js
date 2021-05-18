@@ -1,10 +1,20 @@
 const placeRouter = require("express").Router();
 const Place = require("../models/placesModel");
+const User = require("../models/userModel");
 
 //GETTERS ---------------------------------
 placeRouter.get("/places", async (request, response, next) => {
   try {
-    const result = await Place.find({}).populate("author").populate("comments");
+    const result = await Place.find({})
+      .populate("author")
+      .populate("comments")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author",
+        },
+      })
+      .sort({ createdAt: -1 });
     response.send(result);
   } catch (error) {
     next(error);
@@ -111,7 +121,14 @@ placeRouter.put("/places/addComment", async (request, response, next) => {
       { new: true }
     )
       .populate("author")
-      .populate("comments");
+      .populate("comments")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author",
+        },
+      })
+      .sort({ createdAt: -1 });
     if (!result) {
       return next({ error: "No hay ningún lugar con ese ID" });
     }
