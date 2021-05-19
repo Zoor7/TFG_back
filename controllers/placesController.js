@@ -93,20 +93,28 @@ placeRouter.put(
 //UPDATE---------------------------------------------------------------------
 
 placeRouter.put("/places/addLike", async (request, response, next) => {
-  const { userId, placeId } = request.body;
-
+  const { body } = request;
   try {
-    const result = await Place.updateOne(
-      { _id: placeId },
-      { $push: { likes: userId } },
-      { new: true }
-    ).sort();
-    if (!result) {
-      return next({ error: "No hay ningún lugar con ese ID" });
-    }
-    response.send(result);
+    const res = await Place.updateOne(
+      { _id: body.placeId },
+      { $addToSet: { likes: body.userId } }
+    );
+    response.json(res);
   } catch (error) {
-    next(error);
+    return next(error);
+  }
+});
+
+placeRouter.put("/places/deleteLike", async (request, response, next) => {
+  const { body } = request;
+  try {
+    const res = await Place.updateOne(
+      { _id: body.placeId },
+      { $pull: { likes: body.userId } }
+    );
+    response.json(res);
+  } catch (error) {
+    return next(error);
   }
 });
 
