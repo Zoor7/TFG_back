@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 
 const fileUpload = require("../utils/file-upload");
 const User = require("../models/userModel");
+const { populate } = require("../models/userModel");
 
 userRouter.get("/users", async (request, response, next) => {
   try {
@@ -14,22 +15,24 @@ userRouter.get("/users", async (request, response, next) => {
     return next(error);
   }
 });
-userRouter.post("/users/byEmail", async (request, response, next) => {
-  const { email } = request.body;
 
-  try {
-    const res = await User.find({ email: email });
-    response.json(res);
-  } catch (error) {
-    return next(error);
-  }
-});
+// userRouter.post("/users/byEmail", async (request, response, next) => {
+//   const { email } = request.body;
+
+//   try {
+//     const res = await User.find({ email: email });
+//     response.json(res);
+//   } catch (error) {
+//     return next(error);
+//   }
+// });
 
 userRouter.get("/users/:_id", async (request, response, next) => {
   const { _id } = request.params;
 
   try {
     const res = await User.findById(_id);
+
     response.json(res);
   } catch (error) {
     return next(error);
