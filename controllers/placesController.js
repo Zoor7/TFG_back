@@ -150,19 +150,19 @@ placeRouter.put("/places/addComment", async (request, response, next) => {
 placeRouter.post(
   "/places/findPlacesByRadius",
   async (request, response, next) => {
-    const { km, coordinates } = request.body;
+    const { kms, coordinates } = request.body;
 
     try {
       const res = await Place.find({
         location: {
           $geoWithin: {
-            $centerSphere: [[coordinates[0], coordinates[1]], km / 6378.1],
+            $centerSphere: [[coordinates[0], coordinates[1]], kms / 6378.1],
           },
         },
       });
       response.json(res);
     } catch (error) {
-      return next(error);
+       next(error);
     }
   }
 );
