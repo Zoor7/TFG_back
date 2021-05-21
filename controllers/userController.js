@@ -1,9 +1,7 @@
 const userRouter = require("express").Router();
-const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const fileUpload = require("../utils/file-upload");
 const User = require("../models/userModel");
 
 userRouter.get("/users", async (request, response, next) => {
@@ -29,7 +27,12 @@ userRouter.get("/users/:_id", async (request, response, next) => {
   const { _id } = request.params;
 
   try {
-    const res = await User.findById(_id);
+    const res = await User.findById(_id).populate('likes').populate({
+      path: "likes",
+      populate: {
+        path: "author",
+      },
+    })
     response.json(res);
   } catch (error) {
     return next(error);
@@ -47,7 +50,6 @@ userRouter.post("/users/signup", async (req, res, next) => {
     return next("El registro ha fallado, inténtalo más tarde por favor.");
   }
 
-  console.log(existingUser);
   if (existingUser) {
     return next(
       "El usuario ya existe, inicia sesión en vez de registrarte por favor. - User repetido"
@@ -70,7 +72,6 @@ userRouter.post("/users/signup", async (req, res, next) => {
 
   try {
     await createdUser.save();
-    console.log(createdUser);
   } catch (err) {
     return next(
       "El usuario ya existe, inicia sesión en vez de registrarte por favor. - Problema al guardar"
@@ -100,7 +101,12 @@ userRouter.post("/users/login", async (req, res, next) => {
   let existingUser;
 
   try {
-    existingUser = await User.findOne({ email: email });
+    existingUser = await User.findOne({ email: email }).populate('likes').populate({
+      path: "likes",
+      populate: {
+        path: "author",
+      },
+    });
   } catch (err) {
     return next("El login ha fallado, inténtalo más tarde por favor.");
   }
@@ -157,10 +163,19 @@ userRouter.put("/users/addPlace", async (request, response, next) => {
 userRouter.put("/users/addLike", async (request, response, next) => {
   const { body } = request;
   try {
-    const res = await User.updateOne(
+    const res = await User.findOneAndUpdate(
       { _id: body.userId },
-      { $addToSet: { likes: body.placeId } }
-    );
+      { $addToSet: { likes: body.placeId } },
+      {new:true}
+    )
+    .populate('likes')
+    .populate({
+      path: "likes",
+      populate: {
+        path: "author",
+      },
+    })
+
     response.json(res);
   } catch (error) {
     return next(error);
