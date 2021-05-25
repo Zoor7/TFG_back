@@ -14,16 +14,16 @@ userRouter.get("/users", async (request, response, next) => {
   }
 });
 
-// userRouter.post("/users/byEmail", async (request, response, next) => {
-//   const { email } = request.body;
+userRouter.post("/users/byEmail", async (request, response, next) => {
+  const { email } = request.body;
 
-//   try {
-//     const res = await User.find({ email: email });
-//     response.json(res);
-//   } catch (error) {
-//     return next(error);
-//   }
-// });
+  try {
+    const res = await User.find({ email: email });
+    response.json(res);
+  } catch (error) {
+    return next(error);
+  }
+});
 
 userRouter.get("/users/:_id", async (request, response, next) => {
   const { _id } = request.params;
@@ -99,12 +99,14 @@ userRouter.post("/users/login", async (req, res, next) => {
   let existingUser;
 
   try {
-    existingUser = await User.findOne({ email: email }).populate('likes').populate({
-      path: "likes",
-      populate: {
-        path: "author",
-      },
-    });
+    existingUser = await User.findOne({ email: email })
+      .populate("likes")
+      .populate({
+        path: "likes",
+        populate: {
+          path: "author",
+        },
+      });
   } catch (err) {
     return next("El login ha fallado, inténtalo más tarde por favor.");
   }
@@ -164,15 +166,15 @@ userRouter.put("/users/addLike", async (request, response, next) => {
     const res = await User.findOneAndUpdate(
       { _id: body.userId },
       { $addToSet: { likes: body.placeId } },
-      {new:true}
+      { new: true }
     )
-    .populate('likes')
-    .populate({
-      path: "likes",
-      populate: {
-        path: "author",
-      },
-    })
+      .populate("likes")
+      .populate({
+        path: "likes",
+        populate: {
+          path: "author",
+        },
+      });
 
     response.json(res);
   } catch (error) {
