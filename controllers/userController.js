@@ -18,7 +18,13 @@ userRouter.post("/users/byEmail", async (request, response, next) => {
   const { email } = request.body;
 
   try {
-    const res = await User.find({ email: email });
+    const res = await User.find({ email: email }).populate("likes")
+    .populate({
+      path: "likes",
+      populate: {
+        path: "author",
+      },
+    });;
     response.json(res);
   } catch (error) {
     return next(error);
